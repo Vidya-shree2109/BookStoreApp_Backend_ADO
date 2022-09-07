@@ -37,5 +37,16 @@ namespace BusinessLayer.Services
                 throw ex;
             }
         }
+        public bool UserForgotPassword(string EmailId)
+        {
+            try
+            {
+                return this.userRL.UserForgotPassword(EmailId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

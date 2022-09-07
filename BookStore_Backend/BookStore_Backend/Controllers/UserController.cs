@@ -54,5 +54,27 @@ namespace BookStore_Backend.Controllers
                 throw ex;
             }
         }
+        [HttpPost("ForgotPassword")]
+        public IActionResult UserForgotPassword(string EmailId)
+        {
+            try
+            {
+                if (EmailId == null)
+                {
+                    return this.BadRequest(new { success = false, Message = "Unsuccessful, Enter valid email address.. !" });
+                }
+                var result = this.userBL.UserForgotPassword(EmailId);
+                if (result == false)
+                {
+                    return this.BadRequest(new { success = false, Message = "Something went wrong, mail not sent.. !" });
+                }
+
+                return this.Ok(new { success = true, Message = $"Mail has sent successfully to reset password" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
