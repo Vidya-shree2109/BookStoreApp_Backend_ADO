@@ -55,6 +55,68 @@ namespace RepositoryLayer.Services
                 throw ex;
             }
         }
+        public string UserLogin(UserLoginModel userLoginModel)
+        {
+            SqlConnection sqlConnection = new SqlConnection(configuration["ConnectionStrings:BookStoreApp"]);
+            try
+            {
+                using (sqlConnection)
+                {
+                    sqlConnection.Open();
+                    SqlCommand cmd = new SqlCommand("UserLoginSP", sqlConnection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmailId", userLoginModel.EmailId);
+                    cmd.Parameters.AddWithValue("@Password", userLoginModel.Password);
+                    cmd.ExecuteNonQuery();
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    GetAllUsersModel response = new GetAllUsersModel();
+                    if (reader.Read())
+                    {
+                        response.UserId = reader["UserId"] == DBNull.Value ? default : reader.GetInt32("UserId");
+                        response.EmailId = reader["EmailId"] == DBNull.Value ? default : reader.GetString("EmailId");
+                        response.Password = reader["Password"] == DBNull.Value ? default : reader.GetString("Password");
+                    }
+                    return GenerateJWTSecurityToken(response.EmailId, response.UserId);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+
+        private string GenerateJWTSecurityToken(string emailId, int userId)
+        {
+            try
+            {
+                // generate token
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var tokenKey = Encoding.ASCII.GetBytes("THIS_IS_MY_KEY_TO_GENERATE_TOKEN");
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                    new Claim("EmailId", emailId),
+                    new Claim("UserId",userId.ToString())
+                    }),
+                    Expires = DateTime.UtcNow.AddHours(2),
+
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                return tokenHandler.WriteToken(token);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public static string EncryptPassword(string Password)
         {
             try
@@ -97,6 +159,6 @@ namespace RepositoryLayer.Services
             {
                 throw ex;
             }
-        }
+        }  
     }
 }
