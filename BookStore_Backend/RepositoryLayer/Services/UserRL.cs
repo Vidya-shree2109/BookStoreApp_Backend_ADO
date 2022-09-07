@@ -265,5 +265,40 @@ namespace RepositoryLayer.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+        public bool UserResetPassword(string EmailId, UserPasswordModel userPasswordModel)
+        {
+            SqlConnection sqlConnection = new SqlConnection(configuration["ConnectionStrings:BookStoreApp"]);
+            string newPassword = EncryptPassword(userPasswordModel.NewPassword);
+            string confirmPassword = EncryptPassword(userPasswordModel.ConfirmPassword);
+            try
+            {
+                using (sqlConnection)
+                {
+                    sqlConnection.Open();
+                    SqlCommand cmd = new SqlCommand("UserResetPasswordSP", sqlConnection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmailId", EmailId);
+                    cmd.Parameters.AddWithValue("@Password", newPassword);
+                    var result = 0;
+                    if (newPassword == confirmPassword)
+                    {
+                        result = cmd.ExecuteNonQuery();
+                    }
+
+                    if (result > 0)
+                        return true;
+                    else
+                        return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
     }
 }

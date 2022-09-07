@@ -1,8 +1,12 @@
 ﻿using BusinessLayer.Interfaces;
 using CommonLayer.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
 namespace BookStore_Backend.Controllers
 {
@@ -70,6 +74,29 @@ namespace BookStore_Backend.Controllers
                 }
 
                 return this.Ok(new { success = true, Message = $"Mail has sent successfully to reset password" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [Authorize]
+        [HttpPut("ResetPassword")]
+        public IActionResult UserResetPassword(UserPasswordModel userPasswordModel)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                IEnumerable<Claim> claims = identity.Claims;
+                var emailId = claims.Where(p => p.Type == @"EmailId").FirstOrDefault()?.Value;
+                bool result = this.userBL.UserResetPassword(emailId, userPasswordModel);
+                if (result == true)
+                {
+                    return this.Ok(new { success = true, Message = $"Reset Password successful for EmailId:{emailId}..." });
+                }
+
+                return this.BadRequest(new { success = false, Message = $"Reset Password Unsuccessful for EmailId:{emailId}!!" });
             }
             catch (Exception ex)
             {
