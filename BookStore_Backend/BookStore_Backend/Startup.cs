@@ -37,6 +37,8 @@ namespace BookStore_Backend
 
             services.AddTransient<IUserRL, UserRL>();
             services.AddTransient<IUserBL, UserBL>();
+            services.AddTransient<IAdminRL, AdminRL>();
+            services.AddTransient<IAdminBL, AdminBL>();
 
             services.AddSwaggerGen(setup =>
             {
@@ -62,6 +64,14 @@ namespace BookStore_Backend
                 {
                     { jwtSecurityScheme, Array.Empty<string>() }
                 });
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdministratorRole",
+                    policy => policy.RequireRole("Administrator"));
+                options.AddPolicy("RequireCustomerRole",
+                    policy => policy.RequireRole("Customer"));
             });
 
             services.AddAuthentication(x =>

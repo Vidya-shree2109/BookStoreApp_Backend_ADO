@@ -93,10 +93,10 @@ namespace BookStore_Backend.Controllers
                 bool result = this.userBL.UserResetPassword(emailId, userPasswordModel);
                 if (result == true)
                 {
-                    return this.Ok(new { success = true, Message = $"Reset Password successful for EmailId:{emailId}..." });
+                    return this.Ok(new { success = true, Message = $"Reset Password successful for EmailId : {emailId} !" });
                 }
 
-                return this.BadRequest(new { success = false, Message = $"Reset Password Unsuccessful for EmailId:{emailId}!!" });
+                return this.BadRequest(new { success = false, Message = $"Reset Password Unsuccessful for EmailId : {emailId} !" });
             }
             catch (Exception ex)
             {

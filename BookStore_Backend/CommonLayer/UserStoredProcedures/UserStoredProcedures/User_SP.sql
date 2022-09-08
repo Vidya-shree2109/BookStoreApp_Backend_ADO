@@ -1,4 +1,4 @@
------STORED PROCEDURE FOR USER REGISTRATION-----
+--------------------------------STORED PROCEDURE FOR USER REGISTRATION--------------------------
 
 CREATE PROCEDURE UserRegistrationSP(
 @FullName varchar(255),
@@ -17,7 +17,7 @@ select * from Users_tbl;
 
 
 
------STORED PROCEDURE FOR GET ALL USERS-----
+--------------------------------STORED PROCEDURE FOR GET ALL USERS---------------------------------
 
 
 
@@ -29,7 +29,7 @@ select * from Users_tbl
 end
 
 
------STORED PROCEDURE FOR USER LOGIN-----
+-------------------------------------STORED PROCEDURE FOR USER LOGIN---------------------------------------
 
 
 ALTER PROCEDURE UserLoginSP(
@@ -50,3 +50,31 @@ SELECT
 END CATCH
 
 exec UserLoginSP 'saividya123@gmail.com' ,'Saividya@1234'
+
+
+-------------------------------------STORED PROCEDURE FOR FORGOT PASSWORD ---------------------------------------
+
+
+
+CREATE PROCEDURE UserForgotPasswordSP(
+@EmailId varchar(255)
+)
+As
+Begin 
+select * from Users_tbl where EmailId=@EmailId 
+end 
+
+
+
+-------------------------------------STORED PROCEDURE FOR RESET PASSWORD ---------------------------------------
+
+
+
+CREATE PROCEDURE UserResetPasswordSP(
+@EmailId varchar(50),
+@Password varchar(20)
+)
+As
+Begin
+update Users_tbl set Password=@Password where EmailId=@EmailId
+end
