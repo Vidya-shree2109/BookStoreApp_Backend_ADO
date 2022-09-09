@@ -24,11 +24,11 @@ namespace BookStore_Backend.Controllers
                 var result = this.adminBL.AdminLogin(adminModel);
                 if (result != null)
                 {
-                    return this.Ok(new { Success = true, message = "Login Successful.. !", data = result });
+                    return this.Ok(new { Success = true, message = "Admin Login Successful.. !", data = result });
                 }
                 else
                 {
-                    return this.BadRequest(new { Success = false, message = "Login failed.. !!" });
+                    return this.BadRequest(new { Success = false, message = "Admin Login failed.. !!" });
                 }
             }
             catch (Exception ex)
