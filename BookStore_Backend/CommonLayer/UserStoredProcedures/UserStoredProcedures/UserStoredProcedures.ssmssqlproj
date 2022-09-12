@@ -37,6 +37,12 @@
           <AssociatedConnUserName />
           <FullPath>CartQuery.sql</FullPath>
         </FileNode>
+        <FileNode Name="SQLQuery9.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(localdb)\MSSQLLocaldb:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(localdb)\MSSQLLocaldb</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SQLQuery9.sql</FullPath>
+        </FileNode>
         <FileNode Name="WishListQuery.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(localdb)\MSSQLLocaldb:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(localdb)\MSSQLLocaldb</AssociatedConnSrvName>
