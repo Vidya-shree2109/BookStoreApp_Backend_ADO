@@ -10,18 +10,20 @@ using System.Security.Claims;
 
 namespace BookStore_Backend.Controllers
 {
-    [Authorize(Roles = Role.User)]
     [Route("api/[controller]")]
     [ApiController]
     public class CartController : ControllerBase
     {
         private readonly ICartBL cartBL;
+
         public CartController(ICartBL cartBL)
         {
             this.cartBL = cartBL;
         }
+
+        [Authorize(Roles = Role.User)]
         [HttpPost("AddBookToCart")]
-        public IActionResult AddBookToCart(CartDataModel postModel)
+        public IActionResult AddBookToCart(CartPostModel postModel)
         {
             try
             {
@@ -35,7 +37,7 @@ namespace BookStore_Backend.Controllers
                     return this.BadRequest(new { success = false, Message = $"Check if Book is availbale OR it is already in Cart!!  BookId : {postModel.BookId} to the cart!!" });
                 }
 
-                return this.Ok(new { success = true, Message = $"BookId : {postModel.BookId} Added to cart Sucessfully " });
+                return this.Ok(new { success = true, Message = $"BookId : {postModel.BookId} Added to cart Sucessfully..." });
             }
             catch (Exception ex)
             {
@@ -51,18 +53,20 @@ namespace BookStore_Backend.Controllers
                 IEnumerable<Claim> claims = identity.Claims;
                 var userId = claims.Where(p => p.Type == @"UserId").FirstOrDefault()?.Value;
                 int UserId = Convert.ToInt32(userId);
-                List<CartModel> result = this.cartBL.GetAllBooksInCart(UserId);
+                List<CartResponseModel> result = this.cartBL.GetAllBooksInCart(UserId);
                 if (result == null)
                 {
-                    return this.BadRequest(new { success = false, Message = $"No Book available in cart " });
+                    return this.BadRequest(new { success = false, Message = $"No Book available in cart!!" });
                 }
-                return this.Ok(new { success = true, Message = $"Books in Cart retrieve Sucessfully ", data = result });
+
+                return this.Ok(new { success = true, Message = $"Books in Cart fetched Sucessfully...", data = result });
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
         [HttpGet("GetCartItem/{CartId}")]
         public IActionResult GetCartItemByCartId(int CartId)
         {
@@ -78,14 +82,15 @@ namespace BookStore_Backend.Controllers
                     return this.BadRequest(new { success = false, Message = $"No Book available in cart with this CartId :{CartId}!!" });
                 }
 
-                return this.Ok(new { success = true, Message = $"CartId: {CartId} details retrieve Sucessfully ", data = result });
+                return this.Ok(new { success = true, Message = $"CartId: {CartId} details fetched Sucessfully...", data = result });
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-        [HttpPut("UpdateCart")]
+
+        [HttpPut("UpdateCartItem")]
         public IActionResult UpdateCartItem(CartUpdateModel cartUpdateModel)
         {
             try
@@ -94,18 +99,20 @@ namespace BookStore_Backend.Controllers
                 IEnumerable<Claim> claims = identity.Claims;
                 var userId = claims.Where(p => p.Type == @"UserId").FirstOrDefault()?.Value;
                 int UserId = Convert.ToInt32(userId);
-                var result = this.cartBL.UpdateCart(UserId, cartUpdateModel);
+                var result = this.cartBL.UpdateCartItem(UserId, cartUpdateModel);
                 if (result == false)
                 {
                     return this.BadRequest(new { success = false, Message = $"Update cart Failed!! Check if CartItem is availbale in Cart or not..." });
                 }
-                return this.Ok(new { success = true, Message = $"CartId : {cartUpdateModel.CartId} Updated In cart Sucessfully " });
+
+                return this.Ok(new { success = true, Message = $"CartId : {cartUpdateModel.CartId} Updated In cart Sucessfully..." });
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
         [HttpDelete("DeleteCart/{CartId}")]
         public IActionResult DeleteCartItembyBookId(int CartId)
         {
@@ -120,7 +127,8 @@ namespace BookStore_Backend.Controllers
                 {
                     return this.BadRequest(new { success = false, Message = $"Something went wrong while removing CartItemId : {CartId} from the cart!!" });
                 }
-                return this.Ok(new { success = true, Message = $"CartItemId : {CartId} Deleted from cart Sucessfully " });
+
+                return this.Ok(new { success = true, Message = $"CartItemId : {CartId} removed from cart Sucessfully..." });
             }
             catch (Exception ex)
             {

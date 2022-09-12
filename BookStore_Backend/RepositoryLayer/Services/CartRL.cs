@@ -12,11 +12,13 @@ namespace RepositoryLayer.Services
     public class CartRL : ICartRL
     {
         private readonly string connectionString;
+
         public CartRL(IConfiguration configuration)
         {
             this.connectionString = configuration.GetConnectionString("BookStoreApp");
         }
-        public bool AddBookToCart(int UserId, CartDataModel postModel)
+
+        public bool AddBookToCart(int UserId, CartPostModel postModel)
         {
             SqlConnection sqlconnection = new SqlConnection(this.connectionString);
             try
@@ -50,9 +52,9 @@ namespace RepositoryLayer.Services
                 sqlconnection.Close();
             }
         }
-        public List<CartModel> GetAllBooksInCart(int UserId)
+        public List<CartResponseModel> GetAllBooksInCart(int UserId)
         {
-            List<CartModel> list = new List<CartModel>();
+            List<CartResponseModel> list = new List<CartResponseModel>();
             SqlConnection sqlConnection = new SqlConnection(this.connectionString);
             try
             {
@@ -66,16 +68,16 @@ namespace RepositoryLayer.Services
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        CartModel book = new CartModel();
+                        CartResponseModel book = new CartResponseModel();
                         book.CartId = reader["CartId"] == DBNull.Value ? default : reader.GetInt32("CartId");
                         book.UserId = UserId;
                         book.BookId = reader["BookId"] == DBNull.Value ? default : reader.GetInt32("BookId");
                         book.BookName = reader["BookName"] == DBNull.Value ? default : reader.GetString("BookName");
                         book.Author = reader["Author"] == DBNull.Value ? default : reader.GetString("Author");
                         book.BookQuantity = reader["BookQuantity"] == DBNull.Value ? default : reader.GetInt32("BookQuantity");
-                        book.Price = reader["Price"] == DBNull.Value ? default : reader.GetInt32("Price");
-                        book.DiscountPrice = reader["DiscountPrice"] == DBNull.Value ? default : reader.GetInt32("DiscountPrice");
-                        book.BookImage = reader["BookImage"] == DBNull.Value ? default : reader.GetString("BookImage");
+                        book.Price = reader["Price"] == DBNull.Value ? default : reader.GetDecimal("Price");
+                        book.DiscountPrice = reader["DiscountPrice"] == DBNull.Value ? default : reader.GetDecimal("DiscountPrice");
+                        book.BookImg = reader["BookImg"] == DBNull.Value ? default : reader.GetString("BookImg");
                         list.Add(book);
                     }
 
@@ -91,7 +93,8 @@ namespace RepositoryLayer.Services
                 sqlConnection.Close();
             }
         }
-        public bool UpdateCart(int UserId, CartUpdateModel cartUpdateModel)
+
+        public bool UpdateCartItem(int UserId, CartUpdateModel cartUpdateModel)
         {
             SqlConnection sqlconnection = new SqlConnection(this.connectionString);
             try
@@ -126,6 +129,7 @@ namespace RepositoryLayer.Services
                 sqlconnection.Close();
             }
         }
+
         public bool DeleteCartItembyBookId(int UserId, int CartId)
         {
             SqlConnection sqlConnection = new SqlConnection(this.connectionString);
@@ -156,7 +160,8 @@ namespace RepositoryLayer.Services
                 sqlConnection.Close();
             }
         }
-        public CartModel GetCartItemByCartId(int CartId, int UserId)
+
+        public CartResponseModel GetCartItemByCartId(int CartId, int UserId)
         {
             SqlConnection sqlConnection = new SqlConnection(this.connectionString);
             try
@@ -170,7 +175,7 @@ namespace RepositoryLayer.Services
                     cmd.Parameters.AddWithValue("@CartId", CartId);
 
                     SqlDataReader reader = cmd.ExecuteReader();
-                    CartModel book = new CartModel();
+                    CartResponseModel book = new CartResponseModel();
                     if (reader.Read())
                     {
                         book.CartId = reader["CartId"] == DBNull.Value ? default : reader.GetInt32("CartId");
@@ -179,14 +184,16 @@ namespace RepositoryLayer.Services
                         book.BookName = reader["BookName"] == DBNull.Value ? default : reader.GetString("BookName");
                         book.Author = reader["Author"] == DBNull.Value ? default : reader.GetString("Author");
                         book.BookQuantity = reader["BookQuantity"] == DBNull.Value ? default : reader.GetInt32("BookQuantity");
-                        book.Price = reader["Price"] == DBNull.Value ? default : reader.GetInt32("Price");
-                        book.DiscountPrice = reader["DiscountPrice"] == DBNull.Value ? default : reader.GetInt32("DiscountPrice");
-                        book.BookImage = reader["BookImg"] == DBNull.Value ? default : reader.GetString("BookImage");
+                        book.Price = reader["Price"] == DBNull.Value ? default : reader.GetDecimal("Price");
+                        book.DiscountPrice = reader["DiscountPrice"] == DBNull.Value ? default : reader.GetDecimal("DiscountPrice");
+                        book.BookImg = reader["BookImg"] == DBNull.Value ? default : reader.GetString("BookImg");
                     }
+
                     if (book.BookId == 0)
                     {
                         return null;
                     }
+
                     return book;
                 }
             }

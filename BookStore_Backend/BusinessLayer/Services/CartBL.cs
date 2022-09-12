@@ -10,11 +10,13 @@ namespace BusinessLayer.Services
     public class CartBL : ICartBL
     {
         private readonly ICartRL cartRL;
+
         public CartBL(ICartRL cartRL)
         {
             this.cartRL = cartRL;
         }
-        public bool AddBookToCart(int UserId, CartDataModel postModel)
+
+        public bool AddBookToCart(int UserId, CartPostModel postModel)
         {
             try
             {
@@ -25,7 +27,7 @@ namespace BusinessLayer.Services
                 throw ex;
             }
         }
-        public List<CartModel> GetAllBooksInCart(int UserId)
+        public List<CartResponseModel> GetAllBooksInCart(int UserId)
         {
             try
             {
@@ -36,17 +38,19 @@ namespace BusinessLayer.Services
                 throw ex;
             }
         }
-        public bool UpdateCart(int UserId, CartUpdateModel cartUpdateModel)
+
+        public bool UpdateCartItem(int UserId, CartUpdateModel cartUpdateModel)
         {
             try
             {
-                return this.cartRL.UpdateCart(UserId, cartUpdateModel);
+                return this.cartRL.UpdateCartItem(UserId, cartUpdateModel);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
         public bool DeleteCartItembyBookId(int UserId, int CartId)
         {
             try
@@ -58,7 +62,8 @@ namespace BusinessLayer.Services
                 throw ex;
             }
         }
-        public CartModel GetCartItemByCartId(int CartId, int UserId)
+
+        public CartResponseModel GetCartItemByCartId(int CartId, int UserId)
         {
             try
             {

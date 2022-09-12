@@ -7,11 +7,14 @@ namespace BusinessLayer.Interfaces
 {
     public interface ICartBL
     {
-        public bool AddBookToCart(int UserId, CartDataModel postModel);
-        public List<CartModel> GetAllBooksInCart(int UserId);
-        public bool UpdateCart(int UserId, CartUpdateModel cartUpdateModel);
+        public bool AddBookToCart(int UserId, CartPostModel postModel);
+        public List<CartResponseModel> GetAllBooksInCart(int UserId);
+
+        public bool UpdateCartItem(int UserId, CartUpdateModel cartUpdateModel);
+
         public bool DeleteCartItembyBookId(int UserId, int CartId);
-        public CartModel GetCartItemByCartId(int CartId, int UserId);
+
+        public CartResponseModel GetCartItemByCartId(int CartId, int UserId);
 
     }
 }

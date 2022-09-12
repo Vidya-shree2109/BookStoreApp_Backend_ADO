@@ -37,12 +37,18 @@ namespace BookStore_Backend
 
             services.AddTransient<IUserRL, UserRL>();
             services.AddTransient<IUserBL, UserBL>();
+
             services.AddTransient<IAdminRL, AdminRL>();
             services.AddTransient<IAdminBL, AdminBL>();
+
             services.AddTransient<IBookRL, BookRL>();
             services.AddTransient<IBookBL, BookBL>();
+
             services.AddTransient<ICartRL, CartRL>();
             services.AddTransient<ICartBL, CartBL>();
+
+            services.AddTransient<IWishListRL, WishListRL>();
+            services.AddTransient<IWishListBL, WishListBL>();
 
             services.AddSwaggerGen(setup =>
             {
@@ -74,8 +80,8 @@ namespace BookStore_Backend
             {
                 options.AddPolicy("RequireAdministratorRole",
                     policy => policy.RequireRole("Administrator"));
-                options.AddPolicy("RequireCustomerRole",
-                    policy => policy.RequireRole("Customer"));
+                options.AddPolicy("RequireUsersRole",
+                    policy => policy.RequireRole("Users"));
             });
 
             services.AddAuthentication(x =>
@@ -84,6 +90,8 @@ namespace BookStore_Backend
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(x =>
             {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("THIS_IS_MY_KEY_TO_GENERATE_TOKEN")),

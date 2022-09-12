@@ -10,23 +10,24 @@ namespace BusinessLayer.Services
     public class BookBL : IBookBL
     {
         private readonly IBookRL bookRL;
+
         public BookBL(IBookRL bookRL)
         {
             this.bookRL = bookRL;
         }
 
-        public BookModel AddBook(BookModel bookModel)
+        public BookPostModel AddBook(BookPostModel bookPostModel)
         {
             try
             {
-                return this.bookRL.AddBook(bookModel);
+                return this.bookRL.AddBook(bookPostModel);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-        public List<BookModel> GetAllBooks()
+        public List<BookResponseModel> GetAllBooks()
         {
             try
             {
@@ -37,7 +38,7 @@ namespace BusinessLayer.Services
                 throw ex;
             }
         }
-        public BookModel GetBookById(int BookId)
+        public BookResponseModel GetBookById(int BookId)
         {
             try
             {
@@ -48,11 +49,12 @@ namespace BusinessLayer.Services
                 throw ex;
             }
         }
-        public BookModel UpdateBook(int BookId, BookModel bookModel)
+
+        public BookResponseModel UpdateBooks(int BookId, BookPostModel bookPostModel)
         {
             try
             {
-                return this.bookRL.UpdateBook(BookId, bookModel);
+                return this.bookRL.UpdateBooks(BookId, bookPostModel);
             }
             catch (Exception ex)
             {

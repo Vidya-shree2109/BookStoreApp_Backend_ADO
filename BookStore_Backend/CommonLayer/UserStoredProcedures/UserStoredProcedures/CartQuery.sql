@@ -6,9 +6,12 @@ UserId int  not null FOREIGN KEY (UserId) REFERENCES Users_tbl(UserId),
 BookId int  not null FOREIGN KEY (BookId) REFERENCES Book_tbl(BookId),
 BookQuantity int not null
 )
+
 select * from Cart_tbl
 
-----------------------------------------------------STORED PROCEDURE FOR ADD BOOK TO CART------------------------------------
+
+
+-----------------------------------------stored procedure for AddBookToCart---------------------------------------------
 
 create procedure AddBookToCartSP(
 @UserId int,
@@ -22,7 +25,7 @@ SET @count=(select count(CartId) from Cart_tbl where UserId IN (@UserId) AND Boo
 IF(@count = 0)
 insert into Cart_tbl(UserId,BookId,BookQuantity) values(@UserId,@BookId,@BookQuantity)
 ELSE
-print'Check if Book is available or Its already in Cart!!'
+print'The Book is already in Cart!!'
 end try
 Begin catch
 SELECT 
@@ -34,7 +37,9 @@ SELECT
 END CATCH
 
 
----------------------------------------STORED PROCEDURE FOR GET ALL BOOKS IN CART-----------------------------------------------
+-----------------------------------------stored procedure for GetAllBooksInCart---------------------------------------------
+
+
 
 create procedure GetAllBooksInCartSP(
 @UserId int
@@ -42,7 +47,7 @@ create procedure GetAllBooksInCartSP(
 As
 Begin try
 select 
-c.CartId,b.BookId,b.BookName,b.Author,b.Description,c.BookQuantity,b.Price,b.DiscountPrice,b.BookImage
+c.CartId,b.BookId,b.BookName,b.Author,b.Description,c.BookQuantity,b.Price,b.DiscountPrice,b.BookImg
 from Cart_tbl c INNER JOIN Book_tbl b ON c.BookId = b.BookId where UserId = @UserId
 end try
 Begin catch
@@ -54,7 +59,8 @@ SELECT
 	ERROR_MESSAGE() AS ErrorMessage;
 END CATCH
 
---------------------------------------STORED PROCEDURE FOR UPDATING THE CART ITEM---------------------
+
+-------------------------------------------stored procedure for UpdateCartbyCartId-----------------------------------------------------
 
 create procedure UpdateCartItemSP(
 @UserId int,
@@ -77,7 +83,7 @@ END CATCH
 
 
 
------------------------------------------STORED PROCEDURE FOR DELETING CART ITEM----------------------------------------------------------------------------
+-------------------------------------stored procedure for deleteCartItem--------------------------------------
 
 create procedure DeleteCartItemSP(
 @CartId int,
@@ -96,7 +102,8 @@ SELECT
 	ERROR_MESSAGE() AS ErrorMessage;
 END CATCH
 
------------------------------------------STORED PROCEDURE FOR GETTING CART ITEM BY ID----------------------------------------------------------------------------
+
+--------------------------------------------stored procedure for GetCartItemByCartId----------------------------------------------
 
 create procedure GetCartItemByCartIdSP(
 @UserId int,
@@ -105,7 +112,7 @@ create procedure GetCartItemByCartIdSP(
 As
 Begin try
 select 
-c.CartId,b.BookId,b.BookName,b.Author,b.Description,c.BookQuantity,b.Price,b.DiscountPrice,b.BookImage
+c.CartId,b.BookId,b.BookName,b.Author,b.Description,c.BookQuantity,b.Price,b.DiscountPrice,b.BookImg
 from Cart_tbl c INNER JOIN Book_tbl b ON c.BookId = b.BookId where UserId = @UserId and CartId = @CartId
 end try
 Begin catch

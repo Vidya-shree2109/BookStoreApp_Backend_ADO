@@ -12,35 +12,36 @@ namespace RepositoryLayer.Services
     public class BookRL : IBookRL
     {
         private readonly string connectionString;
-        public BookRL(IConfiguration configuartion)
+
+        public BookRL(IConfiguration configuration)
         {
-            connectionString = configuartion.GetConnectionString("BookStoreApp");
+            this.connectionString = configuration.GetConnectionString("BookStoreApp");
         }
 
-        public BookModel AddBook(BookModel bookModel)
+        public BookPostModel AddBook(BookPostModel bookPostModel)
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-
+            SqlConnection sqlconnection = new SqlConnection(this.connectionString);
             try
             {
-                using (connection)
                 {
-                    connection.Open();
-                    SqlCommand com = new SqlCommand("AddBookSP", connection);
-                    com.CommandType = CommandType.StoredProcedure;
-                    com.Parameters.AddWithValue("@BookName", bookModel.BookName);
-                    com.Parameters.AddWithValue("@Author", bookModel.Author);
-                    com.Parameters.AddWithValue("@Description", bookModel.Description);
-                    com.Parameters.AddWithValue("@Quantity", bookModel.Quantity);
-                    com.Parameters.AddWithValue("@Price", bookModel.Price);
-                    com.Parameters.AddWithValue("@DiscountPrice", bookModel.DiscountPrice);
-                    com.Parameters.AddWithValue("@TotalRating", bookModel.TotalRating);
-                    com.Parameters.AddWithValue("@RatingCount", bookModel.RatingCount);
-                    com.Parameters.AddWithValue("@BookImage", bookModel.BookImage);
-                    var result = com.ExecuteNonQuery();
-                    if (result > 0)
+                    sqlconnection.Open();
+
+                    SqlCommand cmd = new SqlCommand("AddBookSP", sqlconnection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@BookName ", bookPostModel.BookName);
+                    cmd.Parameters.AddWithValue("@Author", bookPostModel.Author);
+                    cmd.Parameters.AddWithValue("@Description ", bookPostModel.Description);
+                    cmd.Parameters.AddWithValue("@Quantity", bookPostModel.Quantity);
+                    cmd.Parameters.AddWithValue("@Price", bookPostModel.Price);
+                    cmd.Parameters.AddWithValue("@DiscountPrice ", bookPostModel.DiscountPrice);
+                    cmd.Parameters.AddWithValue("@TotalRating ", bookPostModel.TotalRating);
+                    cmd.Parameters.AddWithValue("@RatingCount", bookPostModel.RatingCount);
+                    cmd.Parameters.AddWithValue("@BookImg", bookPostModel.BookImg);
+
+                    var result = cmd.ExecuteNonQuery();
+                    if (result != 0)
                     {
-                        return bookModel;
+                        return bookPostModel;
                     }
                     else
                     {
@@ -54,13 +55,13 @@ namespace RepositoryLayer.Services
             }
             finally
             {
-                connection.Close();
+                sqlconnection.Close();
             }
         }
-        public List<BookModel> GetAllBooks()
+        public List<BookResponseModel> GetAllBooks()
         {
-            List<BookModel> listOfBooks = new List<BookModel>();
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
+            List<BookResponseModel> listOfUsers = new List<BookResponseModel>();
+            SqlConnection sqlConnection = new SqlConnection(this.connectionString);
             try
             {
                 using (sqlConnection)
@@ -68,24 +69,24 @@ namespace RepositoryLayer.Services
                     sqlConnection.Open();
                     SqlCommand cmd = new SqlCommand("GetAllBooksSP", sqlConnection);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    BookModel getAllBook = new BookModel();
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        getAllBook.BookId = reader["BookId"] == DBNull.Value ? default : reader.GetInt32("BookId");
-                        getAllBook.BookName = Convert.ToString(reader["BookName"]);
-                        getAllBook.Author = Convert.ToString(reader["Author"]);
-                        getAllBook.Description = Convert.ToString(reader["Description"]);
-                        getAllBook.Quantity = Convert.ToInt32(reader["Quantity"]);
-                        getAllBook.Price = Convert.ToInt32(reader["Price"]);
-                        getAllBook.DiscountPrice = Convert.ToInt32(reader["DiscountPrice"]);
-                        getAllBook.TotalRating = Convert.ToDouble(reader["TotalRating"]);
-                        getAllBook.RatingCount = Convert.ToInt32(reader["RatingCount"]);
-                        getAllBook.BookImage = Convert.ToString(reader["BookImage"]);
-
-                        listOfBooks.Add(getAllBook);
+                        BookResponseModel book = new BookResponseModel();
+                        book.BookId = reader["BookId"] == DBNull.Value ? default : reader.GetInt32("BookId");
+                        book.BookName = reader["BookName"] == DBNull.Value ? default : reader.GetString("BookName");
+                        book.Author = reader["Author"] == DBNull.Value ? default : reader.GetString("Author");
+                        book.Description = reader["Description"] == DBNull.Value ? default : reader.GetString("Description");
+                        book.Quantity = reader["Quantity"] == DBNull.Value ? default : reader.GetInt32("Quantity");
+                        book.Price = reader["Price"] == DBNull.Value ? default : reader.GetDecimal("Price");
+                        book.DiscountPrice = reader["DiscountPrice"] == DBNull.Value ? default : reader.GetDecimal("DiscountPrice");
+                        book.TotalRating = reader["TotalRating"] == DBNull.Value ? default : reader.GetDouble("TotalRating");
+                        book.RatingCount = reader["RatingCount"] == DBNull.Value ? default : reader.GetInt32("RatingCount");
+                        book.BookImg = reader["BookImg"] == DBNull.Value ? default : reader.GetString("BookImg");
+                        listOfUsers.Add(book);
                     }
-                    return listOfBooks;
+
+                    return listOfUsers;
                 }
             }
             catch (Exception ex)
@@ -97,7 +98,7 @@ namespace RepositoryLayer.Services
                 sqlConnection.Close();
             }
         }
-        public BookModel GetBookById(int BookId)
+        public BookResponseModel GetBookById(int BookId)
         {
             SqlConnection sqlConnection = new SqlConnection(this.connectionString);
             try
@@ -105,33 +106,32 @@ namespace RepositoryLayer.Services
                 using (sqlConnection)
                 {
                     sqlConnection.Open();
-                    SqlCommand cmd = new SqlCommand("GetBookByIdSP", sqlConnection);
+                    SqlCommand cmd = new SqlCommand("GetBooksByIdSP", sqlConnection);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@BookId ", BookId);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    BookModel getBookById = new BookModel();
-                    while (reader.Read())
-                    {
-                        getBookById.BookId = reader["BookId"] == DBNull.Value ? default : reader.GetInt32("BookId");
-                        getBookById.BookName = Convert.ToString(reader["BookName"]);
-                        getBookById.Author = Convert.ToString(reader["Author"]);
-                        getBookById.Description = Convert.ToString(reader["Description"]);
-                        getBookById.Quantity = Convert.ToInt32(reader["Quantity"]);
-                        getBookById.Price = Convert.ToInt32(reader["Price"]);
-                        getBookById.DiscountPrice = Convert.ToInt32(reader["DiscountPrice"]);
-                        getBookById.TotalRating = Convert.ToDouble(reader["TotalRating"]);
-                        getBookById.RatingCount = Convert.ToInt32(reader["RatingCount"]);
-                        getBookById.BookImage = Convert.ToString(reader["BookImage"]);
-                    }
-                    if (getBookById.BookId > 0)
-                    {
-                        return getBookById;
-                    }
-                    else
+                    var result = cmd.ExecuteNonQuery();
+                    if (result == 0)
                     {
                         return null;
                     }
 
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    BookResponseModel book = new BookResponseModel();
+                    while (reader.Read())
+                    {
+                        book.BookId = reader["BookId"] == DBNull.Value ? default : reader.GetInt32("BookId");
+                        book.BookName = reader["BookName"] == DBNull.Value ? default : reader.GetString("BookName");
+                        book.Author = reader["Author"] == DBNull.Value ? default : reader.GetString("Author");
+                        book.Description = reader["Description"] == DBNull.Value ? default : reader.GetString("Description");
+                        book.Quantity = reader["Quantity"] == DBNull.Value ? default : reader.GetInt32("Quantity");
+                        book.Price = reader["Price"] == DBNull.Value ? default : reader.GetDecimal("Price");
+                        book.DiscountPrice = reader["DiscountPrice"] == DBNull.Value ? default : reader.GetDecimal("DiscountPrice");
+                        book.TotalRating = reader["TotalRating"] == DBNull.Value ? default : reader.GetDouble("TotalRating");
+                        book.RatingCount = reader["RatingCount"] == DBNull.Value ? default : reader.GetInt32("RatingCount");
+                        book.BookImg = reader["BookImg"] == DBNull.Value ? default : reader.GetString("BookImg");
+                    }
+
+                    return book;
                 }
             }
             catch (Exception ex)
@@ -143,7 +143,8 @@ namespace RepositoryLayer.Services
                 sqlConnection.Close();
             }
         }
-        public BookModel UpdateBook(int BookId, BookModel bookModel)
+
+        public BookResponseModel UpdateBooks(int BookId, BookPostModel bookPostModel)
         {
 
             SqlConnection sqlconnection = new SqlConnection(this.connectionString);
@@ -152,36 +153,36 @@ namespace RepositoryLayer.Services
                 {
                     sqlconnection.Open();
 
-                    SqlCommand com = new SqlCommand("UpdateBookSP", sqlconnection);
-                    com.CommandType = CommandType.StoredProcedure;
-                    com.Parameters.AddWithValue("@BookId", BookId);
-                    com.Parameters.AddWithValue("@BookName", bookModel.BookName);
-                    com.Parameters.AddWithValue("@Author", bookModel.Author);
-                    com.Parameters.AddWithValue("@Description", bookModel.Description);
-                    com.Parameters.AddWithValue("@Quantity", bookModel.Quantity);
-                    com.Parameters.AddWithValue("@Price", bookModel.Price);
-                    com.Parameters.AddWithValue("@DiscountPrice", bookModel.DiscountPrice);
-                    com.Parameters.AddWithValue("@TotalRating", bookModel.TotalRating);
-                    com.Parameters.AddWithValue("@RatingCount", bookModel.RatingCount);
-                    com.Parameters.AddWithValue("@BookImage", bookModel.BookImage);
+                    SqlCommand cmd = new SqlCommand("UpdateBooksSP", sqlconnection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@BookId", BookId);
+                    cmd.Parameters.AddWithValue("@BookName ", bookPostModel.BookName);
+                    cmd.Parameters.AddWithValue("@Author", bookPostModel.Author);
+                    cmd.Parameters.AddWithValue("@Description ", bookPostModel.Description);
+                    cmd.Parameters.AddWithValue("@Quantity", bookPostModel.Quantity);
+                    cmd.Parameters.AddWithValue("@Price", bookPostModel.Price);
+                    cmd.Parameters.AddWithValue("@DiscountPrice ", bookPostModel.DiscountPrice);
+                    cmd.Parameters.AddWithValue("@TotalRating ", bookPostModel.TotalRating);
+                    cmd.Parameters.AddWithValue("@RatingCount", bookPostModel.RatingCount);
+                    cmd.Parameters.AddWithValue("@BookImg", bookPostModel.BookImg);
 
-                    var result = com.ExecuteNonQuery();
+                    var result = cmd.ExecuteNonQuery();
                     if (result != 0)
                     {
-                        SqlDataReader reader = com.ExecuteReader();
-                        BookModel response = new BookModel();
+                        SqlDataReader reader = cmd.ExecuteReader();
+                        BookResponseModel response = new BookResponseModel();
                         if (reader.Read())
                         {
                             response.BookId = reader["BookId"] == DBNull.Value ? default : reader.GetInt32("BookId");
                             response.BookName = reader["BookName"] == DBNull.Value ? default : reader.GetString("BookName");
-                            response.Author = reader["AuthorName"] == DBNull.Value ? default : reader.GetString("Author");
+                            response.Author = reader["Author"] == DBNull.Value ? default : reader.GetString("Author");
                             response.Description = reader["Description"] == DBNull.Value ? default : reader.GetString("Description");
                             response.Quantity = reader["Quantity"] == DBNull.Value ? default : reader.GetInt32("Quantity");
-                            response.Price = reader["OriginalPrice"] == DBNull.Value ? default : reader.GetInt32("Price");
-                            response.DiscountPrice = reader["DiscountPrice"] == DBNull.Value ? default : reader.GetInt32("DiscountPrice");
-                            response.TotalRating = reader["AvgRating"] == DBNull.Value ? default : reader.GetDouble("TotalRating");
+                            response.Price = reader["Price"] == DBNull.Value ? default : reader.GetDecimal("Price");
+                            response.DiscountPrice = reader["DiscountPrice"] == DBNull.Value ? default : reader.GetDecimal("DiscountPrice");
+                            response.TotalRating = reader["TotalRating"] == DBNull.Value ? default : reader.GetDouble("TotalRating");
                             response.RatingCount = reader["RatingCount"] == DBNull.Value ? default : reader.GetInt32("RatingCount");
-                            response.BookImage = reader["BookImg"] == DBNull.Value ? default : reader.GetString("BookImage");
+                            response.BookImg = reader["BookImg"] == DBNull.Value ? default : reader.GetString("BookImg");
                         }
 
                         return response;
@@ -209,7 +210,7 @@ namespace RepositoryLayer.Services
                 using (sqlConnection)
                 {
                     sqlConnection.Open();
-                    SqlCommand cmd = new SqlCommand("DeleteBookSP", sqlConnection);
+                    SqlCommand cmd = new SqlCommand("deleteBookSP", sqlConnection);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@BookId ", BookId);
                     var result = cmd.ExecuteNonQuery();
@@ -230,5 +231,6 @@ namespace RepositoryLayer.Services
                 sqlConnection.Close();
             }
         }
+
     }
 }

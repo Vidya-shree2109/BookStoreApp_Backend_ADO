@@ -6,17 +6,14 @@ using System.Text;
 
 namespace CommonLayer.Model
 {
-    public class CartDataModel
+    public class CartPostModel
     {
         [Required]
         public int BookId { get; set; }
 
         [Required]
         [DefaultValue("1")]
-        [Range(1, 1000, ErrorMessage = "Book Quantity Exceeded its limit !!")]
-        public int BookQuantity
-        {
-            get; set;
-        }
+        [Range(1, 1000, ErrorMessage = "Book Quantity Exceeded it limit!!")]
+        public int BookQuantity { get; set; }
     }
 }

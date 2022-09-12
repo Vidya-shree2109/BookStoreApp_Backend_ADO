@@ -4,9 +4,8 @@ using System.Text;
 
 namespace CommonLayer.Model
 {
-    public class CartModel
+    public class CartResponseModel
     {
-
         public int CartId { get; set; }
 
         public int UserId { get; set; }
@@ -19,10 +18,10 @@ namespace CommonLayer.Model
 
         public int BookQuantity { get; set; }
 
-        public int Price { get; set; }
+        public decimal Price { get; set; }
 
-        public int DiscountPrice { get; set; }
+        public decimal DiscountPrice { get; set; }
 
-        public string BookImage { get; set; }
+        public string BookImg { get; set; }
     }
 }
