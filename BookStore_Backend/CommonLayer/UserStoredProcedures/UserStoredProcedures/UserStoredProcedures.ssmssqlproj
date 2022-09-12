@@ -37,11 +37,23 @@
           <AssociatedConnUserName />
           <FullPath>CartQuery.sql</FullPath>
         </FileNode>
-        <FileNode Name="SQLQuery9.sql">
+        <FileNode Name="AddressQuery.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(localdb)\MSSQLLocaldb:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(localdb)\MSSQLLocaldb</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>SQLQuery9.sql</FullPath>
+          <FullPath>AddressQuery.sql</FullPath>
+        </FileNode>
+        <FileNode Name="OrderQuery.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(localdb)\MSSQLLocaldb:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(localdb)\MSSQLLocaldb</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>OrderQuery.sql</FullPath>
+        </FileNode>
+        <FileNode Name="FeedbackQuery.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(localdb)\MSSQLLocaldb:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(localdb)\MSSQLLocaldb</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>FeedbackQuery.sql</FullPath>
         </FileNode>
         <FileNode Name="WishListQuery.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(localdb)\MSSQLLocaldb:True</AssociatedConnectionMoniker>

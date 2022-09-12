@@ -56,6 +56,9 @@ namespace BookStore_Backend
             services.AddTransient<IOrderRL, OrderRL>();
             services.AddTransient<IOrderBL, OrderBL>();
 
+            services.AddTransient<IFeedbackRL, FeedbackRL>();
+            services.AddTransient<IFeedbackBL, FeedbackBL>();
+
             services.AddSwaggerGen(setup =>
             {
                 // Include 'SecurityScheme' to use JWT Authentication
