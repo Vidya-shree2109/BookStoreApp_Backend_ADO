@@ -30,6 +30,8 @@ namespace BookStore_Backend
 
         public IConfiguration Configuration { get; }
 
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -58,6 +60,15 @@ namespace BookStore_Backend
 
             services.AddTransient<IFeedbackRL, FeedbackRL>();
             services.AddTransient<IFeedbackBL, FeedbackBL>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200", "http://127.0.0.1:5500", "http://127.0.0.1:5501").AllowAnyHeader().AllowAnyMethod();
+                });
+            });
 
             services.AddSwaggerGen(setup =>
             {
@@ -119,6 +130,8 @@ namespace BookStore_Backend
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseHttpsRedirection();
 
